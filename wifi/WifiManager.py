@@ -70,4 +70,20 @@ class Manager():
             time.sleep(3)
             nowAngle = self.compass.get_bearing()
             print(f"今の向き : {nowAngle}  向きたい向き : {nextAngle}")
+
+
+    def moveToNextPoint(self,nextLat,nextLon):
+        nowLocation = self.gps.get_location()
+        nowLat = nowLocation[0]
+        nowLon = nowLocation[0]
+        distance = self.gps.cal_distance((nowLat,nowLon),(nextLat,nextLon))
+        while abs(distance) > 0.01:
+            self.motor.forward(self.motor.non,5)
+
+            nowLocation = self.gps.get_location()
+            nowLat = nowLocation[0]
+            nowLon = nowLocation[0]
+            distance = self.gps.cal_distance((nowLat,nowLon),(nextLat,nextLon))
+
+
         
