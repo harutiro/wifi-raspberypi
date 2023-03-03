@@ -1,6 +1,9 @@
 from flask import Flask , request , render_template
 from flask_restx import Resource, Api ,fields
 from flask_cors import CORS
+from WifiManager import Manager
+
+manager = Manager()
 
 app = Flask(__name__)
 api = Api(app)  # Flask に Flask-RESTX を導入
@@ -38,6 +41,10 @@ class Location(Resource):
         lat = request.json['latitude']
         lon = request.json['longitude']
 
+        manager.getPromiseByFitAngleToNextPoint(lat,lon).then(
+            manager.getPromiseByMoveToNextPoint(lat,lon)
+        ).then()
+
         return {
             "status":"ok",
             "latitude":lat,
@@ -47,3 +54,4 @@ class Location(Resource):
 ## おまじない
 if __name__ == "__main__":
     app.run(debug=False)
+

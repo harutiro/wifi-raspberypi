@@ -4,6 +4,7 @@ from GpsSetting import Gps
 import RPi.GPIO as GPIO
 import time
 import math
+from promise import Promise
 
 class Manager():
 
@@ -34,22 +35,27 @@ class Manager():
         else :
             return current - target  > 180
 
-    def fitAngleToNextPoint(self,nextLat,nextLon):
-        wifiLocation = self.gps.get_location()
-        nowAngle = self.compass.get_bearing()
-        nextAngle = self.calculateAngleToNextPoint(
-            wifiLocation[0],
-            wifiLocation[1],
-            nextLat,
-            nextLon
-        )
+    def getPromiseByFitAngleToNextPoint(self,nextLat,nextLon):
+        def fitAngleToNextPoint(resolve, reject):
+            wifiLocation = self.gps.get_location()
+            nowAngle = self.compass.get_bearing()
+            nextAngle = self.calculateAngleToNextPoint(
+                wifiLocation[0],
+                wifiLocation[1],
+                nextLat,
+                nextLon
+            )
 
-        if self.checkClockwise(nowAngle,nextAngle):
-            self.rightRotation(nextAngle)
-            return
-        else:
-            self.leftRotation(nextAngle)
-            return
+            
+            # TODO:長時間動けなかった時に、助けを呼ぶシステムを書く
+            if self.checkClockwise(nowAngle,nextAngle):
+                self.rightRotation(nextAngle)
+                resolve()
+            else:
+                self.leftRotation(nextAngle)
+                resolve()
+        
+        return Promise(fitAngleToNextPoint)
     
     def rightRotation(self,nextAngle):        
         nowAngle = self.compass.get_bearing()
@@ -71,19 +77,24 @@ class Manager():
             nowAngle = self.compass.get_bearing()
             print(f"今の向き : {nowAngle}  向きたい向き : {nextAngle}")
 
-
-    def moveToNextPoint(self,nextLat,nextLon):
-        nowLocation = self.gps.get_location()
-        nowLat = nowLocation[0]
-        nowLon = nowLocation[0]
-        distance = self.gps.cal_distance((nowLat,nowLon),(nextLat,nextLon))
-        while abs(distance) > 0.01:
-            self.motor.forward(self.motor.non,5)
-
+    def getPromiseByMoveToNextPoint(self,nextLat,nextLon):
+        def moveToNextPoint(resolve, reject):
             nowLocation = self.gps.get_location()
             nowLat = nowLocation[0]
-            nowLon = nowLocation[0]
+            nowLon = nowLocation[1]
             distance = self.gps.cal_distance((nowLat,nowLon),(nextLat,nextLon))
 
+            # TODO:長時間動けなかった時に、助けを呼ぶシステムを書く
+            while abs(distance) > 0.01:
+                self.motor.forward(self.motor.non,5)
 
-        
+                nowLocation = self.gps.get_location()
+                nowLat = nowLocation[0]
+                nowLon = nowLocation[1]
+                distance = self.gps.cal_distance((nowLat,nowLon),(nextLat,nextLon))
+                print(f"今の場所{nowLat},{nowLon} 行きたい場所{nextLat},{nextLon} 距離{distance}")
+            
+            resolve()
+
+        return Promise(moveToNextPoint)
+
