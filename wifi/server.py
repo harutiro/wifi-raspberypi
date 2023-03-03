@@ -1,35 +1,49 @@
-from MotorSetting import Motor
-from CompassSetting import Compass
-from GpsSetting import Gps
-from WifiManager import Manager
-import RPi.GPIO as GPIO
-import time
+from flask import Flask , request , render_template
+from flask_restx import Resource, Api ,fields
+from flask_cors import CORS
 
-import math
- 
-manager = Manager()
+app = Flask(__name__)
+api = Api(app)  # Flask に Flask-RESTX を導入
+CORS(app)
 
-manager.fitAngleToNextPoint(34.810857166666665 , 137.31436433333334)
+resource_fields = api.model("Json Bodyです", {
+    "latitude": fields.Float,
+    "longitude": fields.Float
+})
 
-# motor = Motor()
-# compass = Compass()
-# gps = Gps()
+@api.route('/emergency' ,methods=['get'])
+class emergency(Resource):
 
-# motor.setup()
-# motor.back(Motor.right,3)
-# time.sleep(3)
+    def get(self):
+        return {
+            "status":"ok"
+        }
+    
+@api.route('/emergency/no' ,methods=['get'])
+class emergency(Resource):
+    
+    def get(self):
+        return {
+            "status":"no",
+            "latitude":100.0,
+            "longitude":70.0
 
-# motor.forward(Motor.left,3)
-# time.sleep(3)
+        }
 
-# print(compass.get_bearing())
- 
-# location = gps.get_location()
-# print(str(location[0]))
-# print(str(location[1]))
+@api.route('/location', methods=['post'])
+class Location(Resource):
 
-# print(math.degrees(math.atan(-1)))
+    @api.doc(body=resource_fields)
+    def post(self):    
+        lat = request.json['latitude']
+        lon = request.json['longitude']
 
+        return {
+            "status":"ok",
+            "latitude":lat,
+            "longitude":lon
+        }
 
-
-GPIO.cleanup()
+## おまじない
+if __name__ == "__main__":
+    app.run(debug=False)
