@@ -1,14 +1,19 @@
 from MotorSetting import Motor
 from CompassSetting import Compass
 from GpsSetting import Gps
+from WifiManager import Manager
 import RPi.GPIO as GPIO
 import time
 
 import math
+ 
+manager = Manager()
 
-motor = Motor()
-compass = Compass()
-gps = Gps()
+manager.fitAngleToNextPoint(34.810857166666665 , 137.31436433333334)
+
+# motor = Motor()
+# compass = Compass()
+# gps = Gps()
 
 # motor.setup()
 # motor.back(Motor.right,3)
@@ -27,4 +32,4 @@ gps = Gps()
 
 
 
-# GPIO.cleanup()
+GPIO.cleanup()
