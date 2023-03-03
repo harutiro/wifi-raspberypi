@@ -48,7 +48,7 @@ class Gps:
         distance = math.sqrt(math.pow(m * lat_difference, 2) \
                     + math.pow(n * lon_difference * math.cos(lat_average), 2)) # 距離計測
 
-        print(distance / 1000)
+        # print(distance / 1000)
 
         return distance / 1000
         
