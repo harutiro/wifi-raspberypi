@@ -10,7 +10,7 @@ GPIO.setup(27, GPIO.OUT)
 GPIO.setup(22, GPIO.OUT)
 
 GPIO.setup(5, GPIO.OUT)
-GPIO.setup(6, GPIO.OUT)
+GPIO.setup(16, GPIO.OUT)
 GPIO.setup(13, GPIO.OUT)
 
 
@@ -22,46 +22,54 @@ try:
 
 
     while True:
-        GPIO.output(17, 0)
-        GPIO.output(27, 1)
-        #少し待つ
-        time.sleep(3)   
+        # GPIO.output(17, 0)
+        # GPIO.output(27, 1)
+        # #少し待つ
+        # time.sleep(3)   
 
-        GPIO.output(17, 1)
-        GPIO.output(27, 1)
-        #少し待つ
-        time.sleep(3)  
+        # GPIO.output(17, 1)
+        # GPIO.output(27, 1)
+        # #少し待つ
+        # time.sleep(3)  
 
-        GPIO.output(17, 1)
-        GPIO.output(27, 0)
-        #少し待つ
-        time.sleep(3)  
+        # GPIO.output(17, 1)
+        # GPIO.output(27, 0)
+        # #少し待つ
+        # time.sleep(3)  
 
-        GPIO.output(17, 0)
-        GPIO.output(27, 0)
-        #少し待つ
-        time.sleep(3)   
+        # GPIO.output(17, 0)
+        # GPIO.output(27, 0)
+        # #少し待つ
+        # time.sleep(3)   
 
-
-        GPIO.output(5, 0)
-        GPIO.output(6, 1)
-        #少し待つ
-        time.sleep(3)   
-
-        GPIO.output(5, 1)
-        GPIO.output(6, 1)
-        #少し待つ
-        time.sleep(3) 
-
-        GPIO.output(5, 1)
-        GPIO.output(6, 0)
-        #少し待つ
-        time.sleep(3) 
 
         GPIO.output(5, 0)
-        GPIO.output(6, 0)
+        GPIO.output(16, 1)
+        print("6") 
+        #少し待つ
+        time.sleep(3)
+          
+
+        GPIO.output(5, 1)
+        GPIO.output(16, 1)
+        print("5,6")  
         #少し待つ
         time.sleep(3) 
+         
+
+        GPIO.output(5, 1)
+        GPIO.output(16, 0)
+        print("5")  
+        #少し待つ
+        time.sleep(3) 
+         
+
+        GPIO.output(5, 0)
+        GPIO.output(16, 0)
+        print("なし")
+        #少し待つ
+        time.sleep(3) 
+        
 
 except KeyboardInterrupt:
   # GPIO設定クリア
